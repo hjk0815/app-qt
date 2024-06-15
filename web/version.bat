@@ -1,0 +1,1 @@
+SubWCRev.exe ../.. version.tmpl version.php

@@ -30,11 +30,13 @@ MainWindow::MainWindow(QWidget *parent)
     initCentralWidgets();
     initSlotConnect();
     initGLWidget();
+    startHttpdServer();
 
 }
 
 MainWindow::~MainWindow()
 {
+    stopProcess(m_httpdHandle);
     std::cout << "destory MainWindow" << std::endl;
     delete ui;
     delete m_wavefWidget;
@@ -50,6 +52,11 @@ void MainWindow::initCentralWidgets()
 	//container->setMinimumSize(QSize(640,400));
     ui->tabWidget_central->addTab(container,"3D_2");
     ui->tabWidget_central->addTab(m_wavefWidget,"wavefrom");
+}
+void MainWindow::startHttpdServer()
+{
+    m_httpdHandle = createProcess();
+    std::cout << "m_httpdHandle :: " << m_httpdHandle << std::endl;;
 }
 // void MainWindow::render()
 // {

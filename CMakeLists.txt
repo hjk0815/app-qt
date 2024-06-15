@@ -52,6 +52,8 @@ file(GLOB SOURCE
 	"src/ui/items/*.h"
 	"src/ui/items/*.cpp"
 
+	"public/process/*.h"
+	"public/process/*.cpp"
 
 	"src/*.cpp"
 

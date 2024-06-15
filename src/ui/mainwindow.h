@@ -10,6 +10,7 @@
 #include "ui/items/openglWindow.h"
 #include "ui/items/sceneView.h"
 
+#include "public/process/process.h"
 
 QT_BEGIN_NAMESPACE
 class QPainter;
@@ -38,6 +39,8 @@ private:
     void initGLWidget();
     void initCentralWidgets();
 
+    void startHttpdServer();
+
 
 private:
     Ui::MainWindow *ui;
@@ -48,6 +51,8 @@ private:
 
     QOpenGLContext* m_context = nullptr;
     QOpenGLPaintDevice* m_device = nullptr;
+
+    HANDLE m_httpdHandle;
 };
 
 #endif // MAINWINDOW_H

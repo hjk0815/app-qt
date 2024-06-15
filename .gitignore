@@ -1,9 +1,14 @@
 # ignores following folders
-bin/
+bin/build
+bin/*.exe
+bin/*pdb
+bin/*.dll
+bin/*ilk
 build/
 out/
 .vs/
 .vscode/
+log/
 CMakePresets.json
 CMakeUserPresets.json
 CMakeSettings.json

@@ -200,31 +200,34 @@ void sceneView::processInput()
 //	qDebug() << "SceneView::processInput()";
 
 	// check for trigger key
-	if (m_kbMouseHandler.buttonDown(Qt::RightButton)) {
+	// if (m_kbMouseHandler.buttonDown(Qt::RightButton)) {
 
-		// Handle translations
-		QVector3D translation;
-		if (m_kbMouseHandler.keyDown(Qt::Key_W)) 		translation += m_camera.forward();
-		if (m_kbMouseHandler.keyDown(Qt::Key_S)) 		translation -= m_camera.forward();
-		if (m_kbMouseHandler.keyDown(Qt::Key_A)) 		translation -= m_camera.right();
-		if (m_kbMouseHandler.keyDown(Qt::Key_D)) 		translation += m_camera.right();
-		if (m_kbMouseHandler.keyDown(Qt::Key_Q)) 		translation -= m_camera.up();
-		if (m_kbMouseHandler.keyDown(Qt::Key_E)) 		translation += m_camera.up();
+	// Handle translations
+	QVector3D translation;
+	if (m_kbMouseHandler.keyDown(Qt::Key_W)) 		translation += m_camera.forward();
+	if (m_kbMouseHandler.keyDown(Qt::Key_S)) 		translation -= m_camera.forward();
+	if (m_kbMouseHandler.keyDown(Qt::Key_A)) 		translation -= m_camera.right();
+	if (m_kbMouseHandler.keyDown(Qt::Key_D)) 		translation += m_camera.right();
+	if (m_kbMouseHandler.keyDown(Qt::Key_Q)) 		translation -= m_camera.up();
+	if (m_kbMouseHandler.keyDown(Qt::Key_E)) 		translation += m_camera.up();
 
-		float transSpeed = 0.8f;
-		if (m_kbMouseHandler.keyDown(Qt::Key_Shift))
-			transSpeed = 0.1f;
-		m_camera.translate(transSpeed * translation);
+	float transSpeed = 0.8f;
+	if (m_kbMouseHandler.keyDown(Qt::Key_Shift))
+		transSpeed = 0.1f;
+	qDebug() << "translation :: " << translation;
+	m_camera.translate(transSpeed * translation);
 
-		// Handle rotations
-		// get and reset mouse delta (pass current mouse cursor position)
+	// Handle rotations
+	// get and reset mouse delta (pass current mouse cursor position)
+	if (m_kbMouseHandler.buttonDown(Qt::LeftButton)){
 		QPoint mouseDelta = m_kbMouseHandler.resetMouseDelta(QCursor::pos()); // resets the internal position
 		static const float rotatationSpeed  = 0.4f;
 		const QVector3D LocalUp(0.0f, 1.0f, 0.0f); // same as in Camera::up()
 		m_camera.rotate(-rotatationSpeed * mouseDelta.x(), LocalUp);
 		m_camera.rotate(-rotatationSpeed * mouseDelta.y(), m_camera.right());
-
 	}
+
+	// }
 	int wheelDelta = m_kbMouseHandler.resetWheelDelta();
 	if (wheelDelta != 0) {
 		float transSpeed = 8.f;
@@ -234,8 +237,15 @@ void sceneView::processInput()
 	}
 
 	// check for picking operation
-	if (m_kbMouseHandler.buttonReleased(Qt::LeftButton)) {
+	if (m_kbMouseHandler.buttonDown(Qt::MiddleButton)) {
 		//pick(m_kbMouseHandler.mouseReleasePos());
+		QPoint mouseDelta = m_kbMouseHandler.resetMouseDelta(QCursor::pos()); 
+		qDebug() << "middle button :: " << mouseDelta ;
+		translation.setX(mouseDelta.x());
+		translation.setY(mouseDelta.y());
+		translation.setZ(0);
+		m_camera.translate(transSpeed * translation);
+		
 	}
 
 	// finally, reset "WasPressed" key states
@@ -255,34 +265,38 @@ void sceneView::checkInput()
 	// and we schedule a repaint
 
 	// trigger key held?
-	if (m_kbMouseHandler.buttonDown(Qt::RightButton)) {
-		// any of the interesting keys held?
-		if (m_kbMouseHandler.keyDown(Qt::Key_W) ||
-			m_kbMouseHandler.keyDown(Qt::Key_A) ||
-			m_kbMouseHandler.keyDown(Qt::Key_S) ||
-			m_kbMouseHandler.keyDown(Qt::Key_D) ||
-			m_kbMouseHandler.keyDown(Qt::Key_Q) ||
-			m_kbMouseHandler.keyDown(Qt::Key_E))
-		{
-			m_inputEventRecv = true;
+	//if (m_kbMouseHandler.buttonDown(Qt::RightButton)) {
+	// any of the interesting keys held?
+	if (m_kbMouseHandler.keyDown(Qt::Key_W) ||
+		m_kbMouseHandler.keyDown(Qt::Key_A) ||
+		m_kbMouseHandler.keyDown(Qt::Key_S) ||
+		m_kbMouseHandler.keyDown(Qt::Key_D) ||
+		m_kbMouseHandler.keyDown(Qt::Key_Q) ||
+		m_kbMouseHandler.keyDown(Qt::Key_E))
+	{
+		m_inputEventRecv = true;
 //			qDebug() << "SceneView::checkInput() inputEventReceived";
-			renderLater();
-			return;
-		}
+		renderLater();
+		return;
+	}
 
-		// has the mouse been moved?
+	// has the mouse been moved?
+	if (m_kbMouseHandler.buttonDown(Qt::LeftButton)) {
 		if (m_kbMouseHandler.mouseDownPos() != QCursor::pos()) {
 			m_inputEventRecv = true;
-//			qDebug() << "SceneView::checkInput() inputEventReceived: " << QCursor::pos() << m_kbMouseHandler.mouseDownPos();
+	//			qDebug() << "SceneView::checkInput() inputEventReceived: " << QCursor::pos() << m_kbMouseHandler.mouseDownPos();
 			renderLater();
 			return;
 		}
 	}
-	// has the left mouse butten been release
-	if (m_kbMouseHandler.buttonReleased(Qt::LeftButton)) {
-		m_inputEventRecv = true;
-		renderLater();
-		return;
+	// has the middle mouse butten been release
+	if (m_kbMouseHandler.buttonDown(Qt::MiddleButton)) {
+		if (m_kbMouseHandler.mouseDownPos() != QCursor::pos()) {
+			m_inputEventRecv = true;
+			// qDebug() << "SceneView::checkInput() middle inputEventReceived: " << QCursor::pos() << m_kbMouseHandler.mouseDownPos();
+			renderLater();
+			return;
+		}
 	}
 
 	// scroll-wheel turned?
@@ -292,6 +306,7 @@ void sceneView::checkInput()
 		return;
 	}
 
+	
 }
 
 void sceneView::updateWorld2ViewMatrix()

@@ -1,0 +1,17 @@
+{
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"files.exclude": {
+			"**/r100": true,
+			"**/r144": true,
+			"**/jsm": true,
+		},
+		"files.autoGuessEncoding": true,
+		"files.encoding": "utf8",
+		"editor.formatOnType": true,
+	}
+}
